@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova AI Bot - Advanced Discord Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: white;
+        }
+
+        .hero {
+            min-height: 100vh;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(102,126,234,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(10px, 10px); }
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .floating-elements::before,
+        .floating-elements::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(102,126,234,0.03) 0%, transparent 70%);
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .floating-elements::before {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-elements::after {
+            bottom: 20%;
+            right: 10%;
+            animation-delay: 7s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        .hero-content {
+            text-align: center;
+            color: #1a1a1a;
+            z-index: 10;
+            max-width: 900px;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .bot-avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 40px;
+            border: 4px solid rgba(102, 126, 234, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: levitate 6s ease-in-out infinite;
+        }
+
+        @keyframes levitate {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-15px) scale(1.05); }
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+            animation: titleSlide 1.2s ease-out;
+        }
+
+        @keyframes titleSlide {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 50px;
+            color: #666;
+            font-weight: 400;
+            animation: subtitleFade 1.2s ease-out 0.3s both;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @keyframes subtitleFade {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: buttonAppear 1.2s ease-out 0.6s both;
+        }
+
+        @keyframes buttonAppear {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .btn {
+            padding: 20px 40px;
+            text-decoration: none;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            text-transform: none;
+            letter-spacing: 0.5px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .features {
+            padding: 120px 0;
+            background: white;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 48px;
+            margin-bottom: 80px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 48px;
+            border-radius: 24px;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #4facfe);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            border-color: rgba(102, 126, 234, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 24px;
+            display: block;
+            line-height: 1;
+        }
+
+        .feature-card h3 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.7;
+            font-size: 1.1rem;
+        }
+
+        .commands {
+            padding: 120px 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+        }
+
+        .command-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .command-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        .command-card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+            font-weight: 800;
+        }
+
+        .command-syntax {
+            background: #f8fafc;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            margin-bottom: 16px;
+            border-left: 4px solid #667eea;
+            font-size: 0.95rem;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .command-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .stats {
+            padding: 100px 0;
+            background: #1a1a1a;
+            color: white;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 60px;
+        }
+
+        .stat-item h3 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #667eea, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-item p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .footer {
+            background: #0f0f0f;
+            color: white;
+            padding: 80px 0 40px;
+            text-align: center;
+        }
+
+        .footer-content {
+            margin-bottom: 40px;
+        }
+
+        .footer-content h3 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            font-weight: 800;
+        }
+
+        .footer-content p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 32px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #cbd5e0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            color: #667eea;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #2d3748;
+            padding-top: 32px;
+            color: #a0aec0;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+                letter-spacing: -1px;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .bot-avatar {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid,
+            .commands-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-card,
+            .command-card {
+                padding: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="floating-elements"></div>
+        
+        <div class="hero-content">
+            <img src="https://i.ibb.co/JR7YsKx/nova-ai-bot-avatar.png" alt="Nova AI Bot" class="bot-avatar">
+            <h1>Nova AI</h1>
+            <p class="hero-subtitle">A helpful AI assistant for Discord. Get answers, have conversations, and stay productive.</p>
+            <div class="cta-buttons">
+                <a href="https://discord.com/oauth2/authorize?client_id=1389627040268816516" class="btn btn-primary" target="_blank">
+                    🚀 Add to Discord
+                </a>
+                <a href="#features" class="btn btn-secondary">
+                    ✨ Explore Features
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose Nova?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🧠</span>
+                    <h3>Smart Responses</h3>
+                    <p>Nova provides thoughtful, contextual responses to help you with questions, conversations, and daily tasks on Discord.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🔒</span>
+                    <h3>Privacy by Design</h3>
+                    <p>Your conversations remain private. Nova never stores your messages permanently or uses them for AI training. Your data stays yours.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">💫</span>
+                    <h3>Contextual Memory</h3>
+                    <p>Nova remembers your conversation flow, creating natural, meaningful dialogues that build on previous interactions within each session.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3>Lightning Speed</h3>
+                    <p>Get instant, thoughtful responses. Nova's optimized architecture ensures you never wait long for high-quality assistance.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🛡️</span>
+                    <h3>Safety First</h3>
+                    <p>Built with robust safety measures, Nova provides helpful information while maintaining professional boundaries and avoiding harmful content.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎯</span>
+                    <h3>Simple to Use</h3>
+                    <p>Just mention Nova in chat or send a direct message. No complex setup or configuration needed - it works right out of the box.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="commands">
+        <div class="container">
+            <h2 class="section-title">How to Interact</h2>
+            <div class="commands-grid">
+                <div class="command-card">
+                    <h4>/about</h4>
+                    <div class="command-syntax">/about</div>
+                    <p>Get comprehensive information about Nova, including current version, feature updates, and privacy details.</p>
+                </div>
+                <div class="command-card">
+                    <h4>/ask</h4>
+                    <div class="command-syntax">/ask [your question]</div>
+                    <p>Ask Nova anything privately. Perfect for sensitive questions where you want a confidential response only you can see.</p>
+                </div>
+                <div class="command-card">
+                    <h4>Mention Nova</h4>
+                    <div class="command-syntax">@Nova [your message]</div>
+                    <p>Start a public conversation by mentioning Nova in any channel. Great for collaborative discussions and getting help openly.</p>
+                </div>
+                <div class="command-card">
+                    <h4>Direct Messages</h4>
+                    <div class="command-syntax">Send Nova a DM</div>
+                    <p>Have private, one-on-one conversations with Nova. Perfect for extended discussions and personal assistance.</p>
+                </div>
+                <div class="command-card">
+                    <h4>Reply Chains</h4>
+                    <div class="command-syntax">Reply to Nova's messages</div>
+                    <p>Continue conversations naturally by replying to Nova's responses. Build complex discussions with full context retention.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <h2 class="section-title">Trusted Performance</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>24/7</h3>
+                    <p>Always Online</p>
+                </div>
+                <div class="stat-item">
+                    <h3>∞</h3>
+                    <p>Questions Answered</p>
+                </div>
+                <div class="stat-item">
+                    <h3>0</h3>
+                    <p>Data Stored</p>
+                </div>
+                <div class="stat-item">
+                    <h3>100%</h3>
+                    <p>Privacy Protected</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <h3>Ready for the Future of AI?</h3>
+                <p>Join the growing community of Discord users who trust Nova for intelligent, secure AI assistance.</p>
+                <a href="https://discord.com/oauth2/authorize?client_id=1389627040268816516" class="btn btn-primary" target="_blank">
+                    🚀 Get Started Now
+                </a>
+            </div>
+            
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#support">Support</a>
+                <a href="#documentation">Documentation</a>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Nova AI Bot. Designed for the Discord community.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+  </html>
