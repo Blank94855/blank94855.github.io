@@ -3,599 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova AI Bot - Advanced Discord Assistant</title>
+    <title>Nova AI - Your Advanced Discord Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: #1a1a1a;
-            background: white;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #0B1120; /* Deep dark blue */
+            color: #cbd5e1; /* slate-300 */
         }
 
-        .hero {
-            min-height: 100vh;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
+        .hero-gradient-text {
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%); /* Lighter purple/violet */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-title-gradient {
+            background: linear-gradient(135deg, #a5b4fc 0%, #f0abfc 100%); /* Brighter gradients for titles */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(102,126,234,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-            animation: gridMove 20s linear infinite;
+        .stat-gradient-text {
+             background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(10px, 10px); }
-        }
-
-        .floating-elements {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .floating-elements::before,
-        .floating-elements::after {
-            content: '';
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(102,126,234,0.03) 0%, transparent 70%);
-            animation: float 15s ease-in-out infinite;
-        }
-
-        .floating-elements::before {
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .floating-elements::after {
-            bottom: 20%;
-            right: 10%;
-            animation-delay: 7s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-20px) rotate(120deg); }
-            66% { transform: translateY(10px) rotate(240deg); }
-        }
-
-        .hero-content {
-            text-align: center;
-            color: #1a1a1a;
-            z-index: 10;
-            max-width: 900px;
-            padding: 0 20px;
-            position: relative;
-        }
-
-        .bot-avatar {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            margin: 0 auto 40px;
-            border: 4px solid rgba(102, 126, 234, 0.1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        .levitate-animation {
             animation: levitate 6s ease-in-out infinite;
         }
 
         @keyframes levitate {
             0%, 100% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(-15px) scale(1.05); }
+            50% { transform: translateY(-12px) scale(1.03); }
+        }
+        
+        .glow-shadow {
+            box-shadow: 0 0 50px rgba(99, 102, 241, 0.4), 0 0 80px rgba(192, 132, 252, 0.3);
         }
 
-        .hero h1 {
-            font-size: 5rem;
-            font-weight: 900;
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #667eea 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -2px;
-            animation: titleSlide 1.2s ease-out;
-        }
-
-        @keyframes titleSlide {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .hero-subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 50px;
-            color: #666;
-            font-weight: 400;
-            animation: subtitleFade 1.2s ease-out 0.3s both;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        @keyframes subtitleFade {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 24px;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: buttonAppear 1.2s ease-out 0.6s both;
-        }
-
-        @keyframes buttonAppear {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .btn {
-            padding: 20px 40px;
-            text-decoration: none;
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            position: relative;
-            overflow: hidden;
-            text-transform: none;
-            letter-spacing: 0.5px;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.6s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: 2px solid transparent;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-secondary:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
-        }
-
-        .features {
-            padding: 120px 0;
-            background: white;
-            position: relative;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 3.5rem;
-            font-weight: 900;
-            margin-bottom: 80px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -1px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 48px;
-            margin-bottom: 80px;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 48px;
-            border-radius: 24px;
-            text-align: left;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
+        /* Background animated blobs */
+        .background-blobs {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2, #4facfe);
-            transform: translateX(-100%);
-            transition: transform 0.4s ease;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
         }
 
-        .feature-card:hover::before {
-            transform: translateX(0);
+        .blob1, .blob2 {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 25s infinite ease-in-out;
         }
 
-        .feature-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-            border-color: rgba(102, 126, 234, 0.1);
+        .blob1 {
+            top: 5%;
+            left: 5%;
+            animation-delay: 0s;
         }
 
-        .feature-icon {
-            font-size: 3.5rem;
-            margin-bottom: 24px;
-            display: block;
-            line-height: 1;
+        .blob2 {
+            bottom: 5%;
+            right: 5%;
+            animation-delay: 12s;
         }
 
-        .feature-card h3 {
-            font-size: 1.75rem;
-            font-weight: 800;
-            margin-bottom: 16px;
-            color: #1a1a1a;
-            letter-spacing: -0.5px;
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(50px, -70px) rotate(180deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
         }
 
-        .feature-card p {
-            color: #666;
-            line-height: 1.7;
-            font-size: 1.1rem;
-        }
-
-        .commands {
-            padding: 120px 0;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-        }
-
-        .commands-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 32px;
-        }
-
-        .command-card {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .command-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border-color: rgba(102, 126, 234, 0.2);
-        }
-
-        .command-card h4 {
-            font-size: 1.5rem;
-            margin-bottom: 16px;
-            color: #1a1a1a;
-            font-weight: 800;
-        }
-
-        .command-syntax {
-            background: #f8fafc;
-            padding: 16px 20px;
-            border-radius: 12px;
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-            margin-bottom: 16px;
-            border-left: 4px solid #667eea;
-            font-size: 0.95rem;
-            color: #4a5568;
-            font-weight: 600;
-        }
-
-        .command-card p {
-            color: #666;
-            line-height: 1.6;
-            font-size: 1rem;
-        }
-
-        .stats {
-            padding: 100px 0;
-            background: #1a1a1a;
-            color: white;
-            text-align: center;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 60px;
-        }
-
-        .stat-item h3 {
-            font-size: 4rem;
-            font-weight: 900;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #667eea, #4facfe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-item p {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            font-weight: 500;
-        }
-
-        .footer {
-            background: #0f0f0f;
-            color: white;
-            padding: 80px 0 40px;
-            text-align: center;
-        }
-
-        .footer-content {
-            margin-bottom: 40px;
-        }
-
-        .footer-content h3 {
-            font-size: 2rem;
-            margin-bottom: 16px;
-            font-weight: 800;
-        }
-
-        .footer-content p {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            margin-bottom: 32px;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 48px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            color: #cbd5e0;
-            text-decoration: none;
-            transition: color 0.3s ease;
-            font-weight: 500;
-        }
-
-        .footer-links a:hover {
-            color: #667eea;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid #2d3748;
-            padding-top: 32px;
-            color: #a0aec0;
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 3rem;
-                letter-spacing: -1px;
-            }
-
-            .hero-subtitle {
-                font-size: 1.2rem;
-            }
-
-            .bot-avatar {
-                width: 140px;
-                height: 140px;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .section-title {
-                font-size: 2.5rem;
-            }
-
-            .features-grid,
-            .commands-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .feature-card,
-            .command-card {
-                padding: 32px;
-            }
-        }
     </style>
 </head>
-<body>
-    <section class="hero">
-        <div class="floating-elements"></div>
+<body class="antialiased">
 
-        <div class="hero-content">
-            <img src="https://i.ibb.co/svwTV25Z/1755701328385.png" alt="Nova AI Bot" class="bot-avatar">
-            <h1>Nova AI</h1>
-            <p class="hero-subtitle">A helpful AI assistant for Discord and Telegram. Get answers, have conversations, and stay productive.</p>
-            <div class="cta-buttons">
-                <a href="https://discord.com/oauth2/authorize?client_id=1389627040268816516" class="btn btn-primary" target="_blank">
-                    🚀 Add to Discord
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden py-20 px-4">
+        <div class="background-blobs">
+            <div class="blob1"></div>
+            <div class="blob2"></div>
+        </div>
+        <div class="relative z-10 text-center max-w-4xl mx-auto">
+            <img src="https://i.ibb.co/svwTV25Z/1755701328385.png" alt="Nova AI Bot Avatar" class="w-40 h-40 md:w-48 md:h-48 rounded-full mx-auto mb-8 border-4 border-slate-700/50 levitate-animation glow-shadow">
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter mb-6 hero-gradient-text">Meet Nova AI</h1>
+            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10">Your intelligent assistant for Discord. Elevate your server with smart conversations, instant answers, and unparalleled privacy.</p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="https://discord.com/oauth2/authorize?client_id=1389627040268816516" target="_blank" class="w-full sm:w-auto flex items-center justify-center gap-3 bg-indigo-500 text-white font-bold py-4 px-8 rounded-xl hover:bg-indigo-600 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-indigo-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rocket"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    Add to Discord
                 </a>
-                <a href="https://t.me/Nova_bot_ai_bot" class="btn btn-secondary" target="_blank">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm3.32 7.37l-5.46 3.39c-.3.19-.58.35-.86.51-.28.16-.54.29-.79.4c-.25.11-.47.18-.67.22-.2.04-.37.05-.51.04-.14-.01-.25-.06-.33-.14-.08-.08-.12-.19-.11-.34.01-.15.05-.31.14-.49.09-.18.2-.38.35-.61l1.52-2.19c.17-.24.3-.43.4-.57.1-.14.17-.26.23-.38.06-.12.09-.23.1-.31.01-.08 0-.14-.03-.18-.03-.04-.09-.06-.18-.08-.09-.02-.21-.03-.35-.03-.14 0-.29.02-.45.06-.16.04-.33.09-.52.17l-3.39 1.5c-.32.14-.64.25-.97.35-.33.1-.64.15-.94.15-.22 0-.41-.02-.57-.06-.16-.04-.26-.1-.32-.17-.06-.07-.09-.15-.09-.24 0-.09.02-.17.06-.25.04-.08.09-.15.15-.21l2.43-1.84c.3-.23.57-.45.82-.67.25-.22.46-.43.63-.64.17-.21.28-.42.34-.63.06-.21.08-.43.08-.66 0-.21-.02-.4-.06-.57-.04-.17-.11-.31-.22-.43l-.47-.53c-.11-.13-.19-.27-.25-.42-.06-.15-.09-.3-.09-.45 0-.13.02-.25.07-.35.05-.1.12-.17.2-.21.08-.04.18-.06.29-.06.11 0 .21.02.31.06.1.04.19.1.27.18.08.08.15.19.2.33l.47.67c.18.25.35.5.52.75.17.25.33.47.49.66.16.19.3.35.43.49.13.14.25.26.35.37l4.06-2.52c.26-.16.49-.24.7-.24.21 0 .4.04.57.12.17.08.31.19.42.33.11.14.18.29.21.46.03.17.02.32-.03.45-.05.13-.13.25-.26.34z"/></svg>
-                    Talk on Telegram
-                </a>
-                <a href="#features" class="btn btn-secondary">
-                    ✨ Explore Features
+                <a href="#features" class="w-full sm:w-auto flex items-center justify-center gap-3 bg-slate-800 text-slate-200 font-bold py-4 px-8 rounded-xl hover:bg-slate-700 transition-all duration-300 transform hover:scale-105 shadow-lg border border-slate-700">
+                    Explore Features
                 </a>
             </div>
         </div>
     </section>
 
-    <section class="features" id="features">
-        <div class="container">
-            <h2 class="section-title">Why Choose Nova?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <span class="feature-icon">🧠</span>
-                    <h3>Smart Responses</h3>
-                    <p>Nova provides thoughtful, contextual responses to help you with questions, conversations, and daily tasks on Discord.</p>
+    <!-- Features Section -->
+    <section id="features" class="py-24 bg-slate-900/70 backdrop-blur-sm border-t border-b border-slate-800">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-4 section-title-gradient">Everything Your Server Needs</h2>
+                <p class="text-lg text-slate-400">Nova is engineered from the ground up to provide a seamless, secure, and intelligent AI experience.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature Card Template -->
+                <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700 transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50 hover:-translate-y-2 hover:shadow-indigo-500/10">
+                    <div class="bg-indigo-500/10 text-indigo-400 rounded-full h-12 w-12 flex items-center justify-center mb-5">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-3">Intelligent Conversation</h3>
+                    <p class="text-slate-400 leading-relaxed">Engage in natural, context-aware dialogues. Nova understands conversation history to provide relevant and coherent responses.</p>
                 </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🔒</span>
-                    <h3>Privacy by Design</h3>
-                    <p>Your conversations remain private. Nova never stores your messages permanently or uses them for AI training. Your data stays yours.</p>
+                <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700 transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50 hover:-translate-y-2 hover:shadow-indigo-500/10">
+                    <div class="bg-indigo-500/10 text-indigo-400 rounded-full h-12 w-12 flex items-center justify-center mb-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-3">Absolute Privacy</h3>
+                    <p class="text-slate-400 leading-relaxed">Your privacy is non-negotiable. Nova does not store conversation logs or use your data for training. Period.</p>
                 </div>
-                <div class="feature-card">
-                    <span class="feature-icon">💫</span>
-                    <h3>Contextual Memory</h3>
-                    <p>Nova remembers your conversation flow, creating natural, meaningful dialogues that build on previous interactions within each session.</p>
+                <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700 transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50 hover:-translate-y-2 hover:shadow-indigo-500/10">
+                    <div class="bg-indigo-500/10 text-indigo-400 rounded-full h-12 w-12 flex items-center justify-center mb-5">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-3">Fast Responses</h3>
+                    <p class="text-slate-400 leading-relaxed">Powered by an optimized infrastructure, Nova delivers high-quality, insightful answers in seconds.</p>
                 </div>
-                <div class="feature-card">
-                    <span class="feature-icon">⚡</span>
-                    <h3>Lightning Speed</h3>
-                    <p>Get instant, thoughtful responses. Nova's optimized architecture ensures you never wait long for high-quality assistance.</p>
+                <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700 transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50 hover:-translate-y-2 hover:shadow-indigo-500/10">
+                    <div class="bg-indigo-500/10 text-indigo-400 rounded-full h-12 w-12 flex items-center justify-center mb-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-3">Built-in Safety</h3>
+                    <p class="text-slate-400 leading-relaxed">Nova is designed with strong safety filters to prevent harmful content and ensure a positive interaction every time.</p>
                 </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🛡️</span>
-                    <h3>Safety First</h3>
-                    <p>Built with robust safety measures, Nova provides helpful information while maintaining professional boundaries and avoiding harmful content.</p>
+                <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700 transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50 hover:-translate-y-2 hover:shadow-indigo-500/10">
+                    <div class="bg-indigo-500/10 text-indigo-400 rounded-full h-12 w-12 flex items-center justify-center mb-5">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-coffee"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-3">Effortless Integration</h3>
+                    <p class="text-slate-400 leading-relaxed">No complicated setup. Just add Nova to your server, and it's ready to assist. Mention it or send a DM to start.</p>
                 </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🎯</span>
-                    <h3>Simple to Use</h3>
-                    <p>Just mention Nova in chat or send a direct message. No complex setup or configuration needed - it works right out of the box.</p>
+                <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700 transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50 hover:-translate-y-2 hover:shadow-indigo-500/10">
+                    <div class="bg-indigo-500/10 text-indigo-400 rounded-full h-12 w-12 flex items-center justify-center mb-5">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-3">Multi-Modal Interaction</h3>
+                    <p class="text-slate-400 leading-relaxed">Interact via slash commands, direct messages, or simple mentions. Nova adapts to your preferred way of communicating.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="commands">
-        <div class="container">
-            <h2 class="section-title">How to Interact</h2>
-            <div class="commands-grid">
-                <div class="command-card">
-                    <h4>/about</h4>
-                    <div class="command-syntax">/about</div>
-                    <p>Get comprehensive information about Nova, including current version, feature updates, and privacy details.</p>
+    <!-- Commands Section -->
+    <section class="py-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-4 section-title-gradient">Simple to Command</h2>
+                <p class="text-lg text-slate-400">Getting started with Nova is intuitive. Here are the primary ways to interact.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
+                    <h4 class="text-xl font-bold text-slate-100 mb-2">Private Questions</h4>
+                    <code class="block bg-slate-900 text-slate-300 font-mono text-sm py-2 px-4 rounded-lg mb-4 border-l-4 border-indigo-500">/ask [your question]</code>
+                    <p class="text-slate-400">Use the `/ask` command for a private response that only you can see. Ideal for focused inquiries.</p>
                 </div>
-                <div class="command-card">
-                    <h4>/ask</h4>
-                    <div class="command-syntax">/ask [your question]</div>
-                    <p>Ask Nova anything privately. Perfect for sensitive questions where you want a confidential response only you can see.</p>
+                <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
+                    <h4 class="text-xl font-bold text-slate-100 mb-2">Public Mentions</h4>
+                    <code class="block bg-slate-900 text-slate-300 font-mono text-sm py-2 px-4 rounded-lg mb-4 border-l-4 border-indigo-500">@Nova [your message]</code>
+                    <p class="text-slate-400">Mention `@Nova` in any channel to start a public conversation. Perfect for group brainstorming and collaboration.</p>
                 </div>
-                <div class="command-card">
-                    <h4>Mention Nova</h4>
-                    <div class="command-syntax">@Nova [your message]</div>
-                    <p>Start a public conversation by mentioning Nova in any channel. Great for collaborative discussions and getting help openly.</p>
-                </div>
-                <div class="command-card">
-                    <h4>Direct Messages</h4>
-                    <div class="command-syntax">Send Nova a DM</div>
-                    <p>Have private, one-on-one conversations with Nova. Perfect for extended discussions and personal assistance.</p>
-                </div>
-                <div class="command-card">
-                    <h4>Reply Chains</h4>
-                    <div class="command-syntax">Reply to Nova's messages</div>
-                    <p>Continue conversations naturally by replying to Nova's responses. Build complex discussions with full context retention.</p>
+                <div class="bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
+                    <h4 class="text-xl font-bold text-slate-100 mb-2">Direct Messages</h4>
+                    <code class="block bg-slate-900 text-slate-300 font-mono text-sm py-2 px-4 rounded-lg mb-4 border-l-4 border-indigo-500">Send Nova a DM</code>
+                    <p class="text-slate-400">For longer, one-on-one conversations, simply send a direct message. Your chat history provides full context.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="stats">
-        <div class="container">
-            <h2 class="section-title">Trusted Performance</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <h3>24/7</h3>
-                    <p>Always Online</p>
+    <!-- Stats Section - REDESIGNED FOR BETTER VISIBILITY -->
+    <section class="py-20 bg-slate-900/70 backdrop-blur-sm border-t border-b border-slate-800">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                 <h2 class="text-4xl md:text-5xl font-extrabold tracking-tighter mb-4 section-title-gradient">Reliable & Trusted</h2>
+                 <p class="text-lg text-slate-400">Nova is built for performance and peace of mind.</p>
+            </div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                
+                <!-- Stat 1: Uptime -->
+                <div class="bg-slate-800/50 p-8 rounded-2xl">
+                    <div class="text-indigo-400 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-extrabold stat-gradient-text mb-2">24h</h3>
+                    <p class="text-slate-400 font-medium">Uptime</p>
                 </div>
-                <div class="stat-item">
-                    <h3>4000+</h3>
-                    <p>Questions Answered</p>
+                
+                <!-- Stat 2: Answers Provided -->
+                <div class="bg-slate-800/50 p-8 rounded-2xl">
+                     <div class="text-indigo-400 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-extrabold stat-gradient-text mb-2">5K+</h3>
+                    <p class="text-slate-400 font-medium">Answers Provided</p>
                 </div>
-                <div class="stat-item">
-                    <h3>0</h3>
-                    <p>Data Stored</p>
+
+                <!-- Stat 3: Response Time -->
+                <div class="bg-slate-800/50 p-8 rounded-2xl">
+                     <div class="text-indigo-400 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-extrabold stat-gradient-text mb-2">Fast</h3>
+                    <p class="text-slate-400 font-medium">Response Times</p>
                 </div>
-                <div class="stat-item">
-                    <h3>100%</h3>
-                    <p>Privacy Protected</p>
+
+                <!-- Stat 4: Data Privacy -->
+                <div class="bg-slate-800/50 p-8 rounded-2xl">
+                     <div class="text-indigo-400 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-extrabold stat-gradient-text mb-2">Zero</h3>
+                    <p class="text-slate-400 font-medium">Data Stored</p>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <h3>Ready for the Future of AI?</h3>
-                <p>Join the growing community of Discord users who trust Nova for secure AI assistance.</p>
-                <a href="https://discord.com/oauth2/authorize?client_id=1389627040268816516" class="btn btn-primary" target="_blank">
-                    🚀 Get Started Now
-                </a>
-            </div>
-
-
-
-
-            <div class="footer-bottom">
-                <p>&copy; 2025 Nova AI Bot. Designed for the Discord community by blank9485.</p>
+    <!-- Footer -->
+    <footer class="bg-slate-900/50">
+        <div class="container mx-auto px-6 py-16 text-center">
+            <h3 class="text-3xl font-bold text-white mb-4">Ready to Upgrade Your Server?</h3>
+            <p class="text-slate-400 max-w-xl mx-auto mb-8">Bring the power of secure, intelligent AI to your community today.</p>
+            <a href="https://discord.com/oauth2/authorize?client_id=1389627040268816516" target="_blank" class="inline-flex items-center justify-center gap-3 bg-indigo-500 text-white font-bold py-4 px-8 rounded-xl hover:bg-indigo-600 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-indigo-500/20">
+                🚀 Get Started Now
+            </a>
+            <div class="mt-16 border-t border-slate-800 pt-8">
+                <p class="text-slate-500">&copy; 2025 Nova AI. A hobby project by blank9485.</p>
             </div>
         </div>
     </footer>
+
 </body>
-  </html>
+</html>
+
 
